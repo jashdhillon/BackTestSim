@@ -1,6 +1,7 @@
 import time
 
 
+# Simple class used to profile select sections of code
 class Timer:
     __slots__ = ['start_time', 'end_time', 'time_diff', 'mode']
 

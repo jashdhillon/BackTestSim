@@ -1,9 +1,7 @@
 import json
 from random import randint
 from noise import pnoise3
-from time import time, sleep
-
-from multiprocessing import Process, Manager
+from time import time
 
 symbol_list_cache = None
 seed = (time() * 1000 % 1000000)
@@ -144,6 +142,9 @@ def gen_buy_signal(symbol, quantity):
 
 class TradeSignal:
 
+    # Signal Type:
+    # Sell: -1
+    # Buy: 1
     def __init__(self, signal_type, symbol, quantity):
         self.signal_type = signal_type
         self.symbol = symbol

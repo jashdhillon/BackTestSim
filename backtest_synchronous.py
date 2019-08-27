@@ -1,5 +1,7 @@
-from src.backtest_modules import *
-from src.timer import Timer
+from backtest_modules import *
+from timer import Timer
+
+from multiprocessing import Process
 
 
 class BackTest(Process):
@@ -9,7 +11,6 @@ class BackTest(Process):
         self.strategy_id = strategy_id
         self.backtest_id = backtest_id
         self.period = period
-        self._manager = Manager()
 
         super().__init__(target=self.run_backtest, args=())
 
@@ -65,8 +66,8 @@ class BackTest(Process):
         p = args["time"]
 
         while p < self.period:
-            if p % 100 == 0:
-                print(p)
+            # if p % 100 == 0:
+            #     print(p)
 
             new_prices = dict()
             new_volumes = dict()

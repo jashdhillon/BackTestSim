@@ -1,7 +1,8 @@
-from src.backtest_modules import *
-from src.backtest_utils import load_data
-from src.timer import Timer
+from backtest_modules import *
+from backtest_utils import load_data
+from timer import Timer
 
+from multiprocessing import Process
 from threading import Thread
 
 import json
@@ -251,7 +252,7 @@ class StageB(Stage):
         self.channelA.queue_declare(queue=self.queue_prefix + STAGE_A_NAME, durable=True)
 
         # Handle A Messages
-        self.channelA.basic_consume(self.proc_stage_a_data, queue=self.queue_prefix + STAGE_A_NAME)
+        self.channelA.basic_consume(on_message_callback=self.proc_stage_a_data, queue=self.queue_prefix + STAGE_A_NAME)
         self.channelA.start_consuming()
 
         self.connectionA.close()
@@ -279,7 +280,7 @@ class StageB(Stage):
         self.channelC.queue_declare(queue=self.queue_prefix + STAGE_C_NAME, durable=True)
 
         # Handle C Messages
-        self.channelC.basic_consume(self.proc_stage_c_data, queue=self.queue_prefix + STAGE_C_NAME)
+        self.channelC.basic_consume(on_message_callback=self.proc_stage_c_data, queue=self.queue_prefix + STAGE_C_NAME)
         self.channelC.start_consuming()
 
         self.connectionC.close()
@@ -342,8 +343,8 @@ class StageB(Stage):
                 # print(self.args["stage_a_time"], p, self.args["stage_c_time"])
                 # Copying previous period's Price and Volume Data
 
-                if p % 100 == 0:
-                    print(p)
+                # if p % 100 == 0:
+                #     print(p)
 
                 if p == 0:
                     for k, v in historical_data[0][p].items():
@@ -468,7 +469,7 @@ class StageC(Stage):
         self.channelB.queue_declare(queue=self.queue_prefix + STAGE_B_NAME, durable=True)
 
         # Handle A Messages
-        self.channelB.basic_consume(self.proc_stage_b_data, queue=self.queue_prefix + STAGE_B_NAME)
+        self.channelB.basic_consume(on_message_callback=self.proc_stage_b_data, queue=self.queue_prefix + STAGE_B_NAME)
         self.channelB.start_consuming()
 
         self.connectionB.close()

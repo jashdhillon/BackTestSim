@@ -1,4 +1,4 @@
-from src.backtest_runner import *
+from backtest_runner import *
 from time import sleep
 
 
@@ -13,18 +13,18 @@ def main():
     # TODO: Sync run for 5000 takes 500 seconds and RabbitMQ run for 5000 takes 700.
     # TODO: Locate time discrepancy and determine cause for non linear time consumption for linearly scaled loads
 
+    # Scheduling backtets_count backtests to be executed
     for i in range(backtest_count):
+        # execution_mode: EM_SYNCHRONOUS | EM_RABBITMQ
+        # period: int duration of backtest
         signal_backtest(user_id=user_id, strategy_id=strategy_id, execution_mode=EM_SYNCHRONOUS, kwargs={"period": 30})
 
-    try:
-        while not is_finished:
-            # print("Waiting for additional Backtests")
-            sleep(3)
-    except KeyboardInterrupt as e:
-        terminate()
+    # Waiting for all scheduled backtests to finish before terminating
+    clean_up()
 
     print("-----END-----")
 
 
+# Entry point of backtest simulation
 if __name__ == "__main__":
     main()
